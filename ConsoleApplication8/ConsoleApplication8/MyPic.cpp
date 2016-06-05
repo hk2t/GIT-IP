@@ -5,8 +5,8 @@
 using namespace std;
 using namespace cv;
 
-MyPic::MyPic(String path, int flags, int datasetW, int datasetH){
-    Init(path, flags, datasetW, datasetH);
+MyPic::MyPic(String path, int flags, int datasetW){
+    Init(path, flags, datasetW, 3);
 }
 
 // ªì©l¤Æ
@@ -45,9 +45,9 @@ void MyPic::Show(String name, Mat mat){
 // 7x1
 void MyPic::Cal(){
     cout<<"matt(Rows,Cols)"<<rows<<" - "<<cols<<endl;
-
-    for (int j=0; j<rows-datasetH; j++) {
-        for (int i=0; i<cols-datasetW; i++) {
+    int d = datasetH/2;
+    for (int j=d; j<rows-d; j++) {
+        for (int i=datasetW-1; i<cols; i++) {
             MyDataSet myDataSet(datasetW, datasetW);
             myDataSet.Feed(GetDataSet(j, i));
             myDataSet.ShowLOF();
@@ -55,15 +55,14 @@ void MyPic::Cal(){
             float total = 0;
             for (size_t x=0; x<myDataSet.data.size(); x++) {
                 total += myDataSet.data[x].LOF;
-                //cout<<myDataSet.data[x].LOF<<", ";
             }
-            //cout<<endl;
+            /*
             float mean = this->mean*(total/(float)myDataSet.data.size());
             for (size_t x=0; x<myDataSet.data.size(); x++) {
                 if (myDataSet.data[x].LOF  >= mean) {
                     Vector<int> rc = ConvertToRowCol((int)x, cols);
-                    int _row = (j)+rc[0];
-                    int _col = (i)+rc[1];
+                    int _row = rc[0];
+                    int _col = rc[1];
 
                     cout<<"rc:"<<_row<<", "<<_col;
                     //if (_col == cols-1)
@@ -73,10 +72,32 @@ void MyPic::Cal(){
                     //allLOF[_index] = myDataSet.data[x].LOF;
                 }
             }
-            cout<<endl;
+            */
+
+            float mean = this->mean*(total/(float)myDataSet.data.size());
+            cout<<"mean = "<<mean<<endl;
+            for (size_t x=0; x<myDataSet.data.size(); x++) {
+                if (myDataSet.data[x].LOF  >= mean) {
+                    Vector<int> rc = ConvertToRowCol((int)x, datasetW);
+                    int _row = (j-d)+rc[0];
+                    int _col = (i-(datasetW-1))+rc[1];
+
+                    //cout<<"rc:"<<_row<<", "<<_col;
+                    if (_col < datasetW-1 || _row < d || _row >= rows-d) {
+                        nMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
+                    }
+                    else {
+                        nMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
+                    }
+                }
+            }
+
+            //nMat.at<float>(Point(i, j)) = myDataSet.data[datasetW*2-1].LOF;
+
+            cout<<endl<<endl;
             //break;
         }
-        break;
+        //break;
     }
     cout<<endl;
     ShowAllLOF(nMat);
@@ -198,14 +219,14 @@ void MyPic::Cal(){
 }
 
 Vector<int> MyPic::GetDataSet(int row, int col){
+    int d = datasetH/2;
     Vector<int> colors;
-    for (int j=row; j<row+datasetH; j++) {
-        for (int i=col; i<col+datasetW; i++) {
+    for (int j=row-d; j<=row+d; j++) {
+        for (int i=col-(datasetW-1); i<=col; i++) {
             int color = mat.at<uchar>(Point(i, j));
             colors.push_back(color);
         }
     }
-
     colors.pop_back();
     cout<<"colors.size="<<colors.size();
     return colors;

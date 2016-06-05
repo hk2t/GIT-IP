@@ -6,7 +6,7 @@ using namespace cv;
 class MyPic
 {
 public:
-    MyPic(String path, int flags, int datasetW, int datasetH);
+    MyPic(String path, int flags, int datasetW);
 public:
     Mat mat;
     Mat nMat;
