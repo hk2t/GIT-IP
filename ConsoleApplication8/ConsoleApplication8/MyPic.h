@@ -7,17 +7,15 @@ class MyPic
 {
 public:
     MyPic(String path, int flags, int datasetW);
+    MyPic(String path, int flags, Mat nMat);
 public:
     Mat mat;
-    Mat nMat;
-    Vector<float> allLOF;
-    Mat M_allLOF;// 儲存所有LOF
-    float mean;
+    Mat nMat;// 儲存所有LOF
 public:
     void Show(String name);
     void Show(String name, Mat mat);
-    void Cal();
-    
+    void Cal(float mean);
+    void ShowAllLOF(Mat mat);
 private:
     int datasetW, datasetH;
     int rows;
@@ -28,8 +26,6 @@ private:
     int Rand(int min, int max);
     int ConvertToIndex(int row, int col);
     Vector<int> ConvertToRowCol(int index, int cols);
-    
-    void ShowAllLOF(Mat mat);
     void ShowAllLOF(Vector<float> vec);
     void Bubble_sort(Vector<Intensity> v);
     //void CALCULATE();

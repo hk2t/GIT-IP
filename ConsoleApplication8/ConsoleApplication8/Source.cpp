@@ -12,45 +12,85 @@ using namespace std;
 using namespace cv;
 
 void Create_week(int day, Mat img_small);
+void Helper(MyPic pic, String lable);
 
-Vector<int> Dist3(int colors[]);
 int main(void) {
-    //Mat Source_Color;
-    Mat dst1;
     cout<<123;
     char window_name[] = "Smoothing Demo";
 
-	MyPic pic33("C:/Users/KIM/Desktop/GIT-PROJECT/MY-GIT/Image/IMG_R0_GF.png", CV_8UC1, 7);// 7
+    String imgName = "IMG_R0_GF.png";
 
-    pic33.mean = 5.5;
-    pic33.Cal();
-    pic33.Show("pic33.png");
+    MyPic pic7x3("C:/Users/KIM/Desktop/GIT-PROJECT/MY-GIT/Image/"+imgName, CV_8UC1, 7);// 7
+    pic7x3.Cal(5.5);
+    cout<<"LOF 7X3"<<endl;
+    pic7x3.ShowAllLOF(pic7x3.nMat);
+    Helper(pic7x3, "7x3");
+    
+    MyPic pic5x3("C:/Users/KIM/Desktop/GIT-PROJECT/MY-GIT/Image/"+imgName, CV_8UC1, 5);
+    pic5x3.Cal(4.5);
+    cout<<"LOF 5X3"<<endl;
+    pic5x3.ShowAllLOF(pic5x3.nMat);
+    Helper(pic5x3, "5x3");
 
+    MyPic pic3x3("C:/Users/KIM/Desktop/GIT-PROJECT/MY-GIT/Image/"+imgName, CV_8UC1, 3);
+    pic3x3.Cal(3.5);
+    cout<<"LOF 3X3"<<endl;
+    pic3x3.ShowAllLOF(pic3x3.nMat);
+    Helper(pic3x3, "3x3");
 
-    /*MyMath::Array1D(pic33.mat);
-    MyMath::Array1D(pic33_2.mat);*/
+    // Merge------------------
+    Mat matMerge;
+    matMerge.create(pic7x3.mat.rows, pic7x3.mat.cols, CV_32F);
+    for (int j=0; j<matMerge.rows; j++) {
+        for (int i=0; i<matMerge.cols; i++) {
+            float result7x3 = pic7x3.nMat.at<float>(Point(i, j));
+            float result5x3 = pic5x3.nMat.at<float>(Point(i, j));
+            float result3x3 = pic3x3.nMat.at<float>(Point(i, j));
 
-    //pic33.mean = 3;
-    //pic33.Cal();
-
-    for (int j=0; j<pic33.mat.rows; j++) {
-		for (int i=0; i<pic33.mat.cols; i++) {
-			pic33.mat.at<uchar>(Point(i, j)) = abs(pic33.mat.at<uchar>(Point(i, j)) - 255);
-    	}
+            float result = (result3x3*3 + result5x3*2 + result7x3*1) / 6;
+            if (result >= 0) {//-----------------------------------------------------------<<
+                matMerge.at<float>(Point(i, j)) = result;
+            }
+        }
     }
 
-    pic33.Show("pic33.png");
-    
-   /* pic33_2.mean = 2;
-    pic33_2.Cal();
-    pic33_2.Show("pic33_2.png");*/
+    MyPic picMerge("C:/Users/KIM/Desktop/GIT-PROJECT/MY-GIT/Image/"+imgName, CV_8UC1, matMerge);
+    cout<<"LOF MERGE"<<endl;
+    picMerge.ShowAllLOF(picMerge.nMat);
+    Helper(picMerge, "MERGE");
+
+    waitKey(0);
+    return 0;
+}
+
+void Create_week(int day, Mat img_small) {
+    Mat result(img_small.rows, img_small.cols / 7, CV_8UC1);
+
+    for (int i = 0, x = day; i<result.cols; i++) {
+        for (int j = 0, y = 0; j<result.rows; j++) {
+            if (x<img_small.cols && j<img_small.rows) {
+                result.at<uchar>(Point(i, j)) = img_small.at<uchar>(Point(x, j));
+            }
+        }
+        x = x + 7;
+    }
+    //cvtColor( "IMG_R"+to_string(day)+".png", gray_image, CV_BGR2GRAY );
+    imwrite("IMG_R" + to_string(day) + ".png", result);
+}
+
+void Helper(MyPic pic, String lable){
+    //Mat Source_Color;
+    Mat dst1;
+
+    // ¤Ï¥Õ
+    MyMath::Array1D(pic.mat);
 
     Mat result1;
-    result1.create(pic33.mat.rows, pic33.mat.cols, CV_8UC1);
+    result1.create(pic.mat.rows, pic.mat.cols, CV_8UC1);
 
-    for (int j=0; j<pic33.M_allLOF.rows; j++) {
-        for (int i=0; i<pic33.M_allLOF.cols; i++) {
-            if ((double)pic33.nMat.at<float>(Point(i, j)) != 0) {
+    for (int j=0; j<pic.mat.rows; j++) {
+        for (int i=0; i<pic.mat.cols; i++) {
+            if ((double)pic.nMat.at<float>(Point(i, j)) != 0) {
                 result1.at<uchar>(Point(i, j)) = 200;
             }
             else {
@@ -59,8 +99,7 @@ int main(void) {
         }
     }
 
-    cout<<"Aaaaaaaa"<<endl;
-    //pic33.ShowAllLOF(result1);
+    /*
     for (int j=0; j<result1.rows; j++) {
         printf("%2d-row: ", j);
         for (int i=0; i<result1.cols; i++) {
@@ -82,16 +121,17 @@ int main(void) {
         cout<<endl;
     }
     cout<<endl;
+    */
 
     Mat big;
 	Mat big1;
 	/////////re_big and laplacian
 	resize(result1, big,Size(), 10, 10, INTER_NEAREST);
-	resize(pic33.mat, big1, Size(), 10, 10, INTER_NEAREST);
+	resize(pic.mat, big1, Size(), 10, 10, INTER_NEAREST);
 	Laplacian( big, dst1, CV_8UC1, 1, 15, 0, BORDER_DEFAULT );
-	imshow("laplacian", dst1);
-	imwrite("lapla.png", dst1);
-	imwrite("Gray_big.png", big);
+	imshow(lable+"laplacian", dst1);
+	imwrite(lable+"lapla.png", dst1);
+	imwrite(lable+"Gray_big.png", big);
 
 			 
 	 Mat dst_color(dst1.size(), CV_8UC3);
@@ -123,133 +163,6 @@ int main(void) {
 			}
 		}
 	}
-	imshow("result2", result2);
-	imwrite("result2.png", result2);
-
-    
-
-
-    //pic77.mean = 6.5;
-    //pic77.Cal();
-    //pic77.Show("pic33.png");
-
-
-    //picLena.Show("New_MyLena.PnG", picLena.nMat);
-
-    /*
-    int aa = 100;
-    int *a = &aa;
-    *a = 200;
-    
-    cout<<"a:"<<&a<<endl;
-    cout<<*a;*/
-
-    
-
-    //v.push_back(1);
-    //v.push_back(4);
-    //v.push_back(3);
-    //v.push_back(2);
-    //
-    //v[3] = 100;
-    //for(size_t i=0; i<v.size(); i++) {
-    //    cout << v[i]<< "\n";
-    //}
-    //cout<<"--"<<v[2];
-    //
-    //while (true)
-    //    {
-
-    //    }
-
-    //list<int>::iterator it;
-    //list<int> myList;
-    //myList.push_back(5);
-    //myList.push_back(6);
-    //myList.push_back(1);
-    //myList.push_back(0);
-
-    //
-    //for (it=myList.begin(); it!=myList.end(); it++) {
-    //    cout<<"a"<<*it<<"\n";
-    //}
-    //myList.sort();
-    //for (it=myList.begin(); it!=myList.end(); it++) {
-    //    cout<<"b"<<*it<<"\n";
-    //}
-    //getchar( );
-
-    /*
-    Source_Color = imread("L:/OneHour_2.png", CV_8UC1);//color image
-    cout << Source_Color.rows << " - " << Source_Color.cols;
-
-    Mat lena = imread("L:/lenanoise.PNG", 0);//3 onehour
-    imshow("daylly.png", lena);
-    //Mat daylly(daylly1.size(),CV_8UC1);
-
-    //for (int j=0; j<daylly1.rows; j++) {
-    //for (int i=0; i<daylly1.cols; i++) {
-    //daylly.at<uchar>(Point(i, j)) = abs(daylly1.at<uchar>(Point(i, j)) - 255);
-    //}
-    //}
-    //imwrite("newGray.png",daylly);
-
-    Mat Image_small(Source_Color.rows / 20, Source_Color.cols / 10, CV_8UC1);
-    ///small
-    for (int i = 0, x = 0; x<Source_Color.cols; i++, x = x + 10) {
-        for (int j = 0, y = 0; y<Source_Color.rows; j++, y = y + 20) {
-            if (i<Image_small.cols && j<Image_small.rows) {
-                Image_small.at<uchar>(Point(i, j)) = Source_Color.at<uchar>(Point(x, y));
-            }
-        }
-    }
-
-    for (int i = 0; i<7; i++) {
-        Create_week(i, Image_small);
-    }
-    imwrite("IMG_SM.png", Image_small);
-    ///Apply median filter
-
-
-
-    for (int i = 0; i<lena.rows; i++) {
-        for (int j = 0; j<lena.cols; j++) {
-
-        }
-    }
-
-    int a[10];
-    cout << "\na = " << (sizeof(a) / sizeof(*a));
-    Bubble_sort(a);
-    //*/
-    
-
-    waitKey(0);
-    return 0;
-}
-
-void Create_week(int day, Mat img_small) {
-    Mat result(img_small.rows, img_small.cols / 7, CV_8UC1);
-
-    for (int i = 0, x = day; i<result.cols; i++) {
-        for (int j = 0, y = 0; j<result.rows; j++) {
-            if (x<img_small.cols && j<img_small.rows) {
-                result.at<uchar>(Point(i, j)) = img_small.at<uchar>(Point(x, j));
-            }
-        }
-        x = x + 7;
-    }
-    //cvtColor( "IMG_R"+to_string(day)+".png", gray_image, CV_BGR2GRAY );
-    imwrite("IMG_R" + to_string(day) + ".png", result);
-}
-
-
-Vector<int> Dist3(int colors[]){
-    Vector<int> _v;
-    for (size_t i=0; i<10; i++) {
-        //_v[i] = (size_t)Rand(0, 100);
-        _v.push_back(1);
-    }
-    //++ sort
-    return _v;
+	imshow(lable+"result2", result2);
+	imwrite(lable+"result2.png", result2);
 }
