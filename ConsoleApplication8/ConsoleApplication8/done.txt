@@ -1,0 +1,59 @@
+source+soure_nonwrite
+VS_8UC1
+lablacian(test canny)
+blur
+I-B
+result
+set threshold
+
+onehour.png
+8floor.png
+
+
+gray image
+	median filter 3x3 vs 5x5
+	median filter 3, 5, 7
+
+specal gray image
+	median filter 3x3 vs 5x5
+	median filter 3, 5, 7
+slide 1
+electricity consumption image analysis
+-y vertical la thoi gian trong ngay tinh theo gio
+-x horizontal so ngay  
+-electricity consumption mau cua cac diem tu xanh den do bieu thi muc do su dung dien tu thap den cao
+-mau trang bieu thi cho viec khong co so lieu
+-muc dich o day la tim ra nhung diem bat thuong 
+
+
+slide 2
+dinh nghia va y nghia diem bat thuong 
+1 diem bat thuong la mot diem ma tren cung  mot khoang diem  giong nhau no co gia tri lon hon hoac nho hon nhung diem lan can ( neighbor) 1 threadhold cho truoc 
+o tren cai anh nay thi cai diem bat thuong bieu thi cho hanh dong dung dien bat thuong  
+
+
+
+de tim ra diem bat thuong chung ta co the dung median filter.
+
+boi vi day la bieu do diein cua truong hoc nen thoi gian bieu tu tu hai den chu nhat la khac nhau vi vay luong dien su dung theo toi gian cua moi ngay trong tuan se khac nhau nhu vay truc tiep tinh toan tren source image se khong chuan xac
+voi median filter 
+boi vi hai truc cua buc anh dai dien cho nhung gia tri thoi gian khac nhau nen viec su dung 1 hat nhan hai chieu (2D kernal) khong hop ly dan den ket qua tinh toan bi sai
+
+
+
+hai truc cua buc anh dai dien cho hai dai luong thoi gian khac nhau vay nen viec tinh toan chi dua tren 1 dai luong thoi gian se hop li hon,o day phuong phap duoc lua chon la tinh toan theo gio
+
+
+
+
+slide 3
+voi muc dich tim ra diem bat thuong tren cai anh i.1 chung ta nhom nhung thu giong nhau thanh mot buc anh moi roi tinh toan dua theo buc anh vua tao dc
+voi dinh nghia diem bat thuong nhu tren doi voi mot buc anh ta co the su dung median filter de tim ra no, chung ta chi tinh toan theo 1 dai luong thoi gian vi vay se sung dung 1D median Filter
+
+
+slide 4
+
+
+slide
+ket qua va phan tich
+
