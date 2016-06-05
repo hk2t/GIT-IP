@@ -6,13 +6,12 @@ using namespace cv;
 class MyPic
 {
 public:
-    MyPic(String path, int flags);
     MyPic(String path, int flags, int datasetW, int datasetH);
 public:
     Mat mat;
     Mat nMat;
     Vector<float> allLOF;
-    Mat M_allLOF;
+    Mat M_allLOF;// Àx¦s©Ò¦³LOF
     float mean;
 public:
     void Show(String name);

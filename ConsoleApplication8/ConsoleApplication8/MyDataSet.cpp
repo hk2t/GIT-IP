@@ -9,7 +9,7 @@ MyDataSet::MyDataSet(int rows, int cols){
 }
 
 void MyDataSet::Feed(Vector<int> data){
-    for (size_t i=0; i<data.size()-1; i++) {
+    for (size_t i=0; i<data.size(); i++) {
         MyData _myData(data[i]);
         this->data.push_back(_myData);
     }
