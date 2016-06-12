@@ -79,9 +79,12 @@ void MyPic::Cal(float mean){
                     //    }*/
                     //}
 
-                    if (_col < datasetW-1 || _row < d || _row >= rows-d) {
+                    /*if (_col < datasetW-1 || _row < d || _row >= rows-d) {
                         nMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
-                    }
+                    }*/
+                    //else {
+                    //    nMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
+                    //}
                     if (_col == i && _row == j && nMat.at<float>(Point(_col, _row)) == 0) {
                         nMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
                     }
@@ -91,9 +94,12 @@ void MyPic::Cal(float mean){
                 means.at<float>(Point(_col, _row)) = _mean;
 
                 // nOMat
-                if (_col < datasetW-1 || _row < d || _row >= rows-d) {
+                /*if (_col < datasetW-1 || _row < d || _row >= rows-d) {
                     nOMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
-                }
+                }*/
+                //else {
+                //    nOMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
+                //}
                 if (_col == i && _row == j && nOMat.at<float>(Point(_col, _row)) == 0) {
                     nOMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
                 }
@@ -102,7 +108,7 @@ void MyPic::Cal(float mean){
             //break;
         }
         ////if (j == 2)
-        ////break;
+        //break;
     }
     //cout<<endl;
     //ShowAllLOF(nMat);
