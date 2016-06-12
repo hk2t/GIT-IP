@@ -15,25 +15,27 @@ void Create_week(int day, Mat img_small);
 void Helper(MyPic pic, String lable);
 
 int main(void) {
-    cout<<123;
     char window_name[] = "Smoothing Demo";
 
-    String imgName = "IMG_R0_GF.png";
+    String imgName = "IMG_R2_GF.png";
+    
 
     MyPic pic7x3("C:/Users/KIM/Desktop/GIT-PROJECT/MY-GIT/Image/"+imgName, CV_8UC1, 7);// 7
-    pic7x3.Cal(5.5);
+    pic7x3.Cal(4.0);
+    //pic7x3.Cal(0);
     cout<<"LOF 7X3"<<endl;
     pic7x3.ShowAllLOF(pic7x3.nMat);
     Helper(pic7x3, "7x3");
     
+    
     MyPic pic5x3("C:/Users/KIM/Desktop/GIT-PROJECT/MY-GIT/Image/"+imgName, CV_8UC1, 5);
-    pic5x3.Cal(4.5);
+    pic5x3.Cal(2.0);
     cout<<"LOF 5X3"<<endl;
     pic5x3.ShowAllLOF(pic5x3.nMat);
     Helper(pic5x3, "5x3");
 
     MyPic pic3x3("C:/Users/KIM/Desktop/GIT-PROJECT/MY-GIT/Image/"+imgName, CV_8UC1, 3);
-    pic3x3.Cal(3.5);
+    pic3x3.Cal(2.0);
     cout<<"LOF 3X3"<<endl;
     pic3x3.ShowAllLOF(pic3x3.nMat);
     Helper(pic3x3, "3x3");
@@ -43,22 +45,34 @@ int main(void) {
     matMerge.create(pic7x3.mat.rows, pic7x3.mat.cols, CV_32F);
     for (int j=0; j<matMerge.rows; j++) {
         for (int i=0; i<matMerge.cols; i++) {
-            float result7x3 = pic7x3.nMat.at<float>(Point(i, j));
-            float result5x3 = pic5x3.nMat.at<float>(Point(i, j));
-            float result3x3 = pic3x3.nMat.at<float>(Point(i, j));
+            float result7x3 = pic7x3.nOMat.at<float>(Point(i, j));
+            float result5x3 = pic5x3.nOMat.at<float>(Point(i, j));
+            float result3x3 = pic3x3.nOMat.at<float>(Point(i, j));
 
-            float result = (result3x3*3 + result5x3*2 + result7x3*1) / 6;
-            if (result >= 0) {//-----------------------------------------------------------<<
+            float mean7x3 = pic7x3.means.at<float>(Point(i, j));
+            float mean5x3 = pic5x3.means.at<float>(Point(i, j));
+            float mean3x3 = pic3x3.means.at<float>(Point(i, j));
+
+            float result = (result3x3*3 + result5x3*2 + result7x3*1)/(float)6;
+            float mean = (mean7x3 + mean5x3 + mean3x3)/(float)3;
+            //float result = (result3x3*5 + result5x3*2 + result7x3*1) /8;
+            if (result >= mean) {//-----------------------------------------------------------<<
                 matMerge.at<float>(Point(i, j)) = result;
+            }
+            else {
+                matMerge.at<float>(Point(i, j)) = 0;
             }
         }
     }
+    //imwrite("matMerge.png",matMerge);
+
+    //ShowAllLOF(matMerge);
 
     MyPic picMerge("C:/Users/KIM/Desktop/GIT-PROJECT/MY-GIT/Image/"+imgName, CV_8UC1, matMerge);
     cout<<"LOF MERGE"<<endl;
     picMerge.ShowAllLOF(picMerge.nMat);
     Helper(picMerge, "MERGE");
-
+    
     waitKey(0);
     return 0;
 }
@@ -136,12 +150,8 @@ void Helper(MyPic pic, String lable){
 			 
 	 Mat dst_color(dst1.size(), CV_8UC3);
 	 Mat big_color(big1.size(),CV_8UC3);
-	 //Mat color = imread("L:/IMG_R4_fix.png", 1);
-	 //Mat color = imread("L:/IMG_R0_fix_2.png", 1);
 	 Mat result2(big1.size(), CV_8UC3);
-	 //Mat big_color(big1.size(), CV_8UC3);
 	 cvtColor(dst1, dst_color, COLOR_GRAY2BGR);
-	 //resize(color, big_color, Size(), 10, 10, INTER_NEAREST);
 	 cvtColor(big1, big_color, COLOR_GRAY2BGR);
 
 	for (int j=0; j<big1.rows; j++) {

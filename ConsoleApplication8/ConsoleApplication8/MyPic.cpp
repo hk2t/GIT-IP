@@ -21,6 +21,8 @@ void MyPic::Init(String path, int flags, int datasetW, int datasetH){
     mat = imread(path, flags);
 
     nMat.create(mat.rows, mat.cols, CV_32F);
+    nOMat.create(mat.rows, mat.cols, CV_32F);
+    means.create(mat.rows, mat.cols, CV_32F);
     this->datasetW = datasetW;
     this->datasetH = datasetH;
 
@@ -30,6 +32,8 @@ void MyPic::Init(String path, int flags, int datasetW, int datasetH){
     for (int j=0; j<nMat.rows; j++) {
         for (int i=0; i<nMat.cols; i++) {
             nMat.at<float>(Point(i, j)) = 0;
+            nOMat.at<float>(Point(i, j)) = 0;
+            means.at<float>(Point(i, j)) = 0;
         }
     }
 }
@@ -50,7 +54,7 @@ void MyPic::Cal(float mean){
         for (int i=datasetW-1; i<cols; i++) {
             MyDataSet myDataSet(datasetW, datasetW);
             myDataSet.Feed(GetDataSet(j, i));
-            //myDataSet.ShowLOF();// Åã¥ÜLOF
+            //myDataSet.ShowLOF();// hien thi LOF
             //cout<<endl;
             float total = 0;
             for (size_t x=0; x<myDataSet.data.size(); x++) {
@@ -59,23 +63,46 @@ void MyPic::Cal(float mean){
 
             float _mean = mean*(total/(float)myDataSet.data.size());
             for (size_t x=0; x<myDataSet.data.size(); x++) {
+                Vector<int> rc = ConvertToRowCol((int)x, datasetW);
+                int _row = (j-d)+rc[0];
+                int _col = (i-(datasetW-1))+rc[1];
                 if (myDataSet.data[x].LOF  >= _mean) {
-                    Vector<int> rc = ConvertToRowCol((int)x, datasetW);
-                    int _row = (j-d)+rc[0];
-                    int _col = (i-(datasetW-1))+rc[1];
+                    //if (nMat.at<float>(Point(_col, _row)) == 0) {
+                    //    if (_col < datasetW-1 || _row < d || _row >= rows-d) {
+                    //        nMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
+                    //    }
+                    //    if (_col == i && _row == j) {
+                    //        nMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
+                    //    }
+                    //    /*else {
+                    //        nMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
+                    //    }*/
+                    //}
 
                     if (_col < datasetW-1 || _row < d || _row >= rows-d) {
                         nMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
                     }
-                    else {
+                    if (_col == i && _row == j && nMat.at<float>(Point(_col, _row)) == 0) {
                         nMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
                     }
+                }
+
+                // means
+                means.at<float>(Point(_col, _row)) = _mean;
+
+                // nOMat
+                if (_col < datasetW-1 || _row < d || _row >= rows-d) {
+                    nOMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
+                }
+                if (_col == i && _row == j && nOMat.at<float>(Point(_col, _row)) == 0) {
+                    nOMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
                 }
             }
             //cout<<endl;
             //break;
         }
-        //break;
+        ////if (j == 2)
+        ////break;
     }
     //cout<<endl;
     //ShowAllLOF(nMat);

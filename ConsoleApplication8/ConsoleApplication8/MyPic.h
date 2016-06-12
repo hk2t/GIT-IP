@@ -10,7 +10,9 @@ public:
     MyPic(String path, int flags, Mat nMat);
 public:
     Mat mat;
-    Mat nMat;// Àx¦s©Ò¦³LOF
+    Mat nMat;// saved all LOF
+    Mat nOMat;// saved all LOF
+    Mat means;
 public:
     void Show(String name);
     void Show(String name, Mat mat);
