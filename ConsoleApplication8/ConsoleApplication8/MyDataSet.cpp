@@ -27,25 +27,24 @@ void MyDataSet::CalculateDist(){
                 this->data[i].dist.push_back(_cell);
             }
         }
+
+        
         Bubble_sort(this->data[i].dist);
-        CalculateDist3(i);
+        cout<<"this->data="<<(this->data[i].data)<<": ";
+        for (size_t x=0; x<this->data[i].dist.size(); x++) {
+            int v = (int)(this->data[i].dist[x].data);
+            cout<<v<<", ";
+        }
+        cout<<endl;
+        cout<<"Dist5: ";
+        CalculateDist5(i);
+        cout<<endl;
     }
     CalculateLRD();
     CalculateLOF();
 }
 
-void MyDataSet::CalculateDist3(int index){
-    //for (size_t i=0; i<3; i++) {
-    //    this->data[index].dist3.push_back(this->data[index].dist[i]);
-    //}
-    //for (size_t i=3; i<this->data[index].dist.size(); i++) {
-    //    if (this->data[index].dist[2].data == this->data[index].dist[i].data) {
-    //        this->data[index].dist3.push_back(this->data[index].dist[i]);
-    //    }
-    //    else {
-    //        break;
-    //    }
-    //}
+void MyDataSet::CalculateDist5(int index){
     this->data[index].dist3.push_back(this->data[index].dist[0]);
     int num = 0;
     for (size_t i=1; i<this->data[index].dist.size(); i++) {
@@ -59,6 +58,11 @@ void MyDataSet::CalculateDist3(int index){
             }
             this->data[index].dist3.push_back(this->data[index].dist[i]);
         }
+    }
+
+    for (size_t x=0; x<this->data[index].dist3.size(); x++) {
+        int v = (int)(this->data[index].dist3[x].data);
+        cout<<v<<", ";
     }
 }
 

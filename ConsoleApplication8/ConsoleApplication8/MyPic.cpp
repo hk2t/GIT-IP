@@ -20,6 +20,13 @@ void MyPic::Init(String path, int flags, int datasetW, int datasetH){
     // ³Ð«Ø MAT
     mat = imread(path, flags);
 
+    // ¶Â->¥Õ
+    for (int j=0; j<mat.rows; j++) {
+		for (int i=0; i<mat.cols; i++) {
+			mat.at<uchar>(Point(i, j)) = abs(mat.at<uchar>(Point(i, j)) - 255);
+		}
+	}
+
     nMat.create(mat.rows, mat.cols, CV_32F);
     nOMat.create(mat.rows, mat.cols, CV_32F);
     means.create(mat.rows, mat.cols, CV_32F);
@@ -52,10 +59,11 @@ void MyPic::Cal(float mean){
     int d = datasetH/2;
     for (int j=d; j<rows-d; j++) {
         for (int i=datasetW-1; i<cols; i++) {
+            cout<<"j="<<j<<"i="<<i<<endl;
             MyDataSet myDataSet(datasetW, datasetW);
             myDataSet.Feed(GetDataSet(j, i));
-            //myDataSet.ShowLOF();// hien thi LOF
-            //cout<<endl;
+            myDataSet.ShowLOF();// hien thi LOF
+            cout<<endl;
             float total = 0;
             for (size_t x=0; x<myDataSet.data.size(); x++) {
                 total += myDataSet.data[x].LOF;
@@ -79,9 +87,9 @@ void MyPic::Cal(float mean){
                     //    }*/
                     //}
 
-                    /*if (_col < datasetW-1 || _row < d || _row >= rows-d) {
+                    if (_col < datasetW-1 || _row < d || _row >= rows-d) {
                         nMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
-                    }*/
+                    }
                     //else {
                     //    nMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
                     //}
@@ -100,15 +108,12 @@ void MyPic::Cal(float mean){
                 //else {
                 //    nOMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
                 //}
-                if (_col == i && _row == j && nOMat.at<float>(Point(_col, _row)) == 0) {
+                /*if (_col == i && _row == j && nOMat.at<float>(Point(_col, _row)) == 0) {
                     nOMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
-                }
+                }*/
             }
-            //cout<<endl;
-            //break;
         }
-        ////if (j == 2)
-        //break;
+        break;
     }
     //cout<<endl;
     //ShowAllLOF(nMat);
@@ -124,6 +129,12 @@ Vector<int> MyPic::GetDataSet(int row, int col){
         }
     }
     colors.pop_back();
+
+    cout<<"COLORS: ";
+    for (size_t x=0; x<colors.size(); x++) {
+        cout<<colors[x]<<", ";
+    }
+    cout<<endl;
     return colors;
 }
 

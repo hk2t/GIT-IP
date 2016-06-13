@@ -18,7 +18,7 @@ public:
     void ShowLOF();
 private:
     void CalculateDist();
-    void CalculateDist3(int index);
+    void CalculateDist5(int index);
     void CalculateLRD();
     void CalculateLOF();
     void Bubble_sort(Vector<Cell> v);

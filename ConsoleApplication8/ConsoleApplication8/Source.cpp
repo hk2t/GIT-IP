@@ -19,27 +19,28 @@ int main(void) {
 
     String imgName = "IMG_R0_GF.png";
     
-
+    
     MyPic pic7x3("C:/Users/KIM/Desktop/GIT-PROJECT/MY-GIT/Image/"+imgName, CV_8UC1, 7);// 7
-    pic7x3.Cal(3.0);
-    //pic7x3.Cal(0);
+    //pic7x3.Cal(3.0);
+    pic7x3.Cal(0);
     cout<<"LOF 7X3"<<endl;
     pic7x3.ShowAllLOF(pic7x3.nMat);
     Helper(pic7x3, "7x3");
     
-    
+    /*
     MyPic pic5x3("C:/Users/KIM/Desktop/GIT-PROJECT/MY-GIT/Image/"+imgName, CV_8UC1, 5);
-    pic5x3.Cal(2.0);
+    pic5x3.Cal(2);
     cout<<"LOF 5X3"<<endl;
     pic5x3.ShowAllLOF(pic5x3.nMat);
     Helper(pic5x3, "5x3");
-
+    
     MyPic pic3x3("C:/Users/KIM/Desktop/GIT-PROJECT/MY-GIT/Image/"+imgName, CV_8UC1, 3);
-    pic3x3.Cal(1.5);
+    //pic3x3.Cal(1.5);
+    //pic3x3.Cal(0);
     cout<<"LOF 3X3"<<endl;
     pic3x3.ShowAllLOF(pic3x3.nMat);
     Helper(pic3x3, "3x3");
-
+    
     // Merge------------------
     Mat matMerge;
     matMerge.create(pic7x3.mat.rows, pic7x3.mat.cols, CV_32F);
@@ -53,10 +54,12 @@ int main(void) {
             float mean5x3 = pic5x3.means.at<float>(Point(i, j));
             float mean3x3 = pic3x3.means.at<float>(Point(i, j));
 
-            float result = (result3x3*3 + result5x3*2 + result7x3*1)/(float)6;
-            float mean = (mean7x3 + mean5x3 + mean3x3)/(float)3;
+            //float result = (result3x3*5 + result5x3*3 + result7x3*2)/(float)10;
+            float result = (result3x3*3  + result7x3*1)/(float)4;
+            //float mean = (mean7x3*5 + mean5x3*3 + mean3x3*2)/(float)10;
+            float mean = (mean7x3*1 + mean3x3*3)/(float)4;
             //float result = (result3x3*5 + result5x3*2 + result7x3*1) /8;
-            if (result >= mean) {//-----------------------------------------------------------<<
+            if (result >= 2.5) {//-----------------------------------------------------------<<
                 matMerge.at<float>(Point(i, j)) = result;
             }
             else {
@@ -72,7 +75,7 @@ int main(void) {
     cout<<"LOF MERGE"<<endl;
     picMerge.ShowAllLOF(picMerge.nMat);
     Helper(picMerge, "MERGE");
-    
+    */
     waitKey(0);
     return 0;
 }
@@ -95,9 +98,6 @@ void Create_week(int day, Mat img_small) {
 void Helper(MyPic pic, String lable){
     //Mat Source_Color;
     Mat dst1;
-
-    // ¤Ï¥Õ
-    MyMath::Array1D(pic.mat);
 
     Mat result1;
     result1.create(pic.mat.rows, pic.mat.cols, CV_8UC1);
