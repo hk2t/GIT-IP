@@ -21,8 +21,8 @@ int main(void) {
     
     
     MyPic pic7x3("C:/Users/KIM/Desktop/GIT-PROJECT/MY-GIT/Image/"+imgName, CV_8UC1, 7);// 7
-    //pic7x3.Cal(3.0);
-    pic7x3.Cal(0);
+    pic7x3.Cal(3.0);
+    //pic7x3.Cal(0);
     cout<<"LOF 7X3"<<endl;
     pic7x3.ShowAllLOF(pic7x3.nMat);
     Helper(pic7x3, "7x3");

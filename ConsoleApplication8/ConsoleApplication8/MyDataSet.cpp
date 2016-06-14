@@ -17,7 +17,8 @@ void MyDataSet::Feed(Vector<int> data){
 }
 
 void MyDataSet::CalculateDist(){
-    for (size_t i=0; i<this->data.size(); i++) {
+    // DEBUG
+    /*for (size_t i=0; i<this->data.size(); i++) {
         for (size_t j=0; j<this->data.size(); j++) {
             if (j != i) {// 2 diem k trung nhau
                 int d = abs(this->data[i].data - this->data[j].data);
@@ -41,6 +42,23 @@ void MyDataSet::CalculateDist(){
         cout<<endl;
     }
     CalculateLRD();
+    CalculateLOF();*/
+    for (size_t i=0; i<this->data.size(); i++) {
+        for (size_t j=0; j<this->data.size(); j++) {
+            if (j != i) {// 2 diem k trung nhau
+                int d = abs(this->data[i].data - this->data[j].data);
+                Cell _cell;
+                _cell.index = j;
+                _cell.data = d;
+                this->data[i].dist.push_back(_cell);
+            }
+        }
+
+        
+        Bubble_sort(this->data[i].dist);
+        CalculateDist5(i);
+    }
+    CalculateLRD();
     CalculateLOF();
 }
 
@@ -59,11 +77,12 @@ void MyDataSet::CalculateDist5(int index){
             this->data[index].dist3.push_back(this->data[index].dist[i]);
         }
     }
-
+    // DEBUG
+    /*
     for (size_t x=0; x<this->data[index].dist3.size(); x++) {
         int v = (int)(this->data[index].dist3[x].data);
         cout<<v<<", ";
-    }
+    }*/
 }
 
 void MyDataSet::CalculateLRD(){
@@ -102,17 +121,17 @@ void MyDataSet::CalculateLOF(){
 void MyDataSet::ShowPointData(int row, int col){
     int index = ConvertToIndex(row, col);
 
-    cout<<"dataset-(row"<<row<<",col"<<col<<")index = "<<index<<", data = "<<this->data[index].data<<endl;
-    cout<<"dist:";
+    //cout<<"dataset-(row"<<row<<",col"<<col<<")index = "<<index<<", data = "<<this->data[index].data<<endl;
+    //cout<<"dist:";
     for (size_t i=0; i<this->data[index].dist.size(); i++) {
         cout<<data[index].dist[i].data<<"("<<data[index].dist[i].index<<")/";
     }
 
-    cout<<endl<<"dist3:";
-    for (size_t i=0; i<this->data[index].dist3.size(); i++) {
-        cout<<this->data[index].dist3[i].data<<"("<<this->data[index].dist3[i].index<<")+";
-    }
-    cout<<endl<<endl;
+    //cout<<endl<<"dist3:";
+    //for (size_t i=0; i<this->data[index].dist3.size(); i++) {
+    //    cout<<this->data[index].dist3[i].data<<"("<<this->data[index].dist3[i].index<<")+";
+    //}
+    //cout<<endl<<endl;
 }
 
 void MyDataSet::ShowLRD(){

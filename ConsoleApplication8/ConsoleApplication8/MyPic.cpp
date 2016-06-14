@@ -59,11 +59,10 @@ void MyPic::Cal(float mean){
     int d = datasetH/2;
     for (int j=d; j<rows-d; j++) {
         for (int i=datasetW-1; i<cols; i++) {
-            cout<<"j="<<j<<"i="<<i<<endl;
             MyDataSet myDataSet(datasetW, datasetW);
             myDataSet.Feed(GetDataSet(j, i));
-            myDataSet.ShowLOF();// hien thi LOF
-            cout<<endl;
+            //myDataSet.ShowLOF();// hien thi LOF
+            //cout<<endl;
             float total = 0;
             for (size_t x=0; x<myDataSet.data.size(); x++) {
                 total += myDataSet.data[x].LOF;
@@ -86,7 +85,7 @@ void MyPic::Cal(float mean){
                     //        nMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
                     //    }*/
                     //}
-
+                    
                     if (_col < datasetW-1 || _row < d || _row >= rows-d) {
                         nMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
                     }
@@ -99,7 +98,7 @@ void MyPic::Cal(float mean){
                 }
 
                 // means
-                means.at<float>(Point(_col, _row)) = _mean;
+                // means.at<float>(Point(_col, _row)) = _mean;
 
                 // nOMat
                 /*if (_col < datasetW-1 || _row < d || _row >= rows-d) {
@@ -113,7 +112,6 @@ void MyPic::Cal(float mean){
                 }*/
             }
         }
-        break;
     }
     //cout<<endl;
     //ShowAllLOF(nMat);
@@ -129,12 +127,13 @@ Vector<int> MyPic::GetDataSet(int row, int col){
         }
     }
     colors.pop_back();
-
+    // DEBUG
+    /*
     cout<<"COLORS: ";
     for (size_t x=0; x<colors.size(); x++) {
         cout<<colors[x]<<", ";
     }
-    cout<<endl;
+    cout<<endl;*/
     return colors;
 }
 
