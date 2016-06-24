@@ -67,10 +67,10 @@ void MyDataSet::CalculateDist5(int index){
     int num = 0;
     for (size_t i=1; i<this->data[index].dist.size(); i++) {
         int endIndex = this->data[index].dist3.size()-1;
-        if (num < 5) {
+        if (num < 3) {
             if (this->data[index].dist3[endIndex].data != this->data[index].dist[i].data) {
                 num++;
-                if (num == 5) {
+                if (num == 3) {
                     break;
                 }
             }

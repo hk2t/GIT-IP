@@ -69,6 +69,7 @@ void MyPic::Cal(float mean){
             }
 
             float _mean = mean*(total/(float)myDataSet.data.size());
+            //float _mean = mean;
             for (size_t x=0; x<myDataSet.data.size(); x++) {
                 Vector<int> rc = ConvertToRowCol((int)x, datasetW);
                 int _row = (j-d)+rc[0];

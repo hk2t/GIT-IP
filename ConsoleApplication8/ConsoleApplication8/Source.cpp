@@ -17,11 +17,17 @@ void Helper(MyPic pic, String lable);
 int main(void) {
     char window_name[] = "Smoothing Demo";
 
-    String imgName = "IMG_R0_GF.png";
+    //String imgName = "IMG_R0_GF.png";
+    //String imgName = "IMG_R1_GF.png";
+    //String imgName = "IMG_R2_GF.png";
+    //String imgName = "IMG_R3_GF.png";
+    String imgName = "IMG_R4_GF.png";
+    //String imgName = "IMG_R5_GF.png";
+    //String imgName = "IMG_R6_GF.png";
     
     
     MyPic pic7x3("C:/Users/KIM/Desktop/GIT-PROJECT/MY-GIT/Image/"+imgName, CV_8UC1, 7);// 7
-    pic7x3.Cal(3.0);
+    pic7x3.Cal(4);
     //pic7x3.Cal(0);
     cout<<"LOF 7X3"<<endl;
     pic7x3.ShowAllLOF(pic7x3.nMat);
