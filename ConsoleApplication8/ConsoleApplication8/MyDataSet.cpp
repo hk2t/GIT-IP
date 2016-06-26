@@ -8,45 +8,29 @@ MyDataSet::MyDataSet(int rows, int cols){
     this->cols = cols;
 }
 
-void MyDataSet::Feed(Vector<int> data){
-    for (size_t i=0; i<data.size(); i++) {
-        MyData _myData(data[i]);
-        this->data.push_back(_myData);
+void MyDataSet::Feed(Mat dataset){
+    for (int j=0; j<dataset.rows; j++) {
+        for (int i=0; i<dataset.cols; i++) {
+            float color = dataset.at<float>(Point(i, j));
+            if (color != -1) {this->size++;}
+            MyData _myData(color);
+            this->data.push_back(_myData);
+        }
     }
     CalculateDist();
 }
 
 void MyDataSet::CalculateDist(){
-    // DEBUG
-    /*for (size_t i=0; i<this->data.size(); i++) {
-        for (size_t j=0; j<this->data.size(); j++) {
-            if (j != i) {// 2 diem k trung nhau
-                int d = abs(this->data[i].data - this->data[j].data);
-                Cell _cell;
-                _cell.index = j;
-                _cell.data = d;
-                this->data[i].dist.push_back(_cell);
-            }
-        }
-
-        
-        Bubble_sort(this->data[i].dist);
-        cout<<"this->data="<<(this->data[i].data)<<": ";
-        for (size_t x=0; x<this->data[i].dist.size(); x++) {
-            int v = (int)(this->data[i].dist[x].data);
-            cout<<v<<", ";
-        }
-        cout<<endl;
-        cout<<"Dist5: ";
-        CalculateDist5(i);
-        cout<<endl;
-    }
-    CalculateLRD();
-    CalculateLOF();*/
     for (size_t i=0; i<this->data.size(); i++) {
+        if (this->data[i].color == -1) {continue;}
         for (size_t j=0; j<this->data.size(); j++) {
+            /*Vector<int> rcOther = ConvertToRowCol((int)j, this->cols);
+            int _row = rcOther[0];
+            int _col = rcOther[1];*/
+            
+            if (this->data[j].color == -1) {continue;}
             if (j != i) {// 2 diem k trung nhau
-                int d = abs(this->data[i].data - this->data[j].data);
+                int d = abs(this->data[i].color - this->data[j].color);
                 Cell _cell;
                 _cell.index = j;
                 _cell.data = d;
@@ -54,15 +38,16 @@ void MyDataSet::CalculateDist(){
             }
         }
 
-        
+        //cout<<"this->data[i].dist = "<<this->data[i].dist.size()<<endl;
         Bubble_sort(this->data[i].dist);
-        CalculateDist5(i);
+        CalculateDist3(i);
     }
     CalculateLRD();
     CalculateLOF();
 }
 
-void MyDataSet::CalculateDist5(int index){
+void MyDataSet::CalculateDist3(int index){
+    if (this->data[index].dist.size() == 0) {return;}
     this->data[index].dist3.push_back(this->data[index].dist[0]);
     int num = 0;
     for (size_t i=1; i<this->data[index].dist.size(); i++) {
@@ -82,11 +67,14 @@ void MyDataSet::CalculateDist5(int index){
     for (size_t x=0; x<this->data[index].dist3.size(); x++) {
         int v = (int)(this->data[index].dist3[x].data);
         cout<<v<<", ";
-    }*/
+    }
+    cout<<endl;
+    //*/
 }
 
 void MyDataSet::CalculateLRD(){
     for (size_t i=0; i<this->data.size(); i++) {
+        if (this->data[i].color == -1) {continue;}
         float total = 0;
         for (size_t j=0; j<this->data[i].dist3.size(); j++) {
             int _data = this->data[i].dist3[j].data;
@@ -107,6 +95,7 @@ void MyDataSet::CalculateLRD(){
 
 void MyDataSet::CalculateLOF(){
     for (size_t i=0; i<this->data.size(); i++) {
+        if (this->data[i].color == -1) {continue;}
         float total = 0;    
         for (size_t j=0; j<this->data[i].dist3.size(); j++) {
             int neighbor = this->data[i].dist3[j].index;
@@ -146,7 +135,7 @@ void MyDataSet::ShowLRD(){
         }
         printf("%3.5f - ", this->data[i].LFD);
         if ((i+1)%this->rows == 0) {
-            cout<<endl;
+            //cout<<endl;
         }
     }
 }
@@ -162,7 +151,7 @@ void MyDataSet::ShowLOF(){
             printf("%3.5f - ", this->data[i].LOF);
         }
         if ((i+1)%this->rows == 0) {
-            cout<<endl;
+            //cout<<endl;
         }
     }
 }
@@ -181,4 +170,13 @@ void MyDataSet::Bubble_sort(Vector<Cell> v) {
 
 int MyDataSet::ConvertToIndex(int row, int col){
     return row*this->cols + col;
+}
+
+Vector<int> MyDataSet::ConvertToRowCol(int index, int cols){
+    Vector<int> v;
+    int row = index/cols;
+    int col = index-row*cols;
+    v.push_back(row);
+    v.push_back(col);
+    return v;
 }

@@ -59,82 +59,92 @@ void MyPic::Cal(float mean){
     int d = datasetH/2;
     for (int j=d; j<rows-d; j++) {
         for (int i=datasetW-1; i<cols; i++) {
-            MyDataSet myDataSet(datasetW, datasetW);
+            MyDataSet myDataSet(datasetH, datasetW);
             myDataSet.Feed(GetDataSet(j, i));
             //myDataSet.ShowLOF();// hien thi LOF
             //cout<<endl;
             float total = 0;
             for (size_t x=0; x<myDataSet.data.size(); x++) {
+                cout<<"myDataSet.data["<<x<<"].LOF = "<<myDataSet.data[x].LOF<<endl;
                 total += myDataSet.data[x].LOF;
             }
 
             float _mean = mean*(total/(float)myDataSet.data.size());
+            //float _mean = mean*(total/(float)myDataSet.size);
             //float _mean = mean;
             for (size_t x=0; x<myDataSet.data.size(); x++) {
+                if (myDataSet.data[x].color == -1) {continue;}
                 Vector<int> rc = ConvertToRowCol((int)x, datasetW);
                 int _row = (j-d)+rc[0];
                 int _col = (i-(datasetW-1))+rc[1];
                 if (myDataSet.data[x].LOF  >= _mean) {
-                    //if (nMat.at<float>(Point(_col, _row)) == 0) {
-                    //    if (_col < datasetW-1 || _row < d || _row >= rows-d) {
-                    //        nMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
-                    //    }
-                    //    if (_col == i && _row == j) {
-                    //        nMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
-                    //    }
-                    //    /*else {
-                    //        nMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
-                    //    }*/
-                    //}
-                    
                     if (_col < datasetW-1 || _row < d || _row >= rows-d) {
                         nMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
                     }
-                    //else {
-                    //    nMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
-                    //}
-                    if (_col == i && _row == j && nMat.at<float>(Point(_col, _row)) == 0) {
+                    else if (_col == i && _row == j && nMat.at<float>(Point(_col, _row)) == 0) {
                         nMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
                     }
                 }
-
-                // means
-                // means.at<float>(Point(_col, _row)) = _mean;
-
-                // nOMat
-                /*if (_col < datasetW-1 || _row < d || _row >= rows-d) {
-                    nOMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
-                }*/
-                //else {
-                //    nOMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
-                //}
-                /*if (_col == i && _row == j && nOMat.at<float>(Point(_col, _row)) == 0) {
-                    nOMat.at<float>(Point(_col, _row)) = myDataSet.data[x].LOF;
-                }*/
             }
+            //break;
         }
+
+        cout<<endl;
+        if (j == 2)
+            break;
     }
     //cout<<endl;
     //ShowAllLOF(nMat);
 }
 
-Vector<int> MyPic::GetDataSet(int row, int col){
+Mat MyPic::GetDataSet(int row, int col){
     int d = datasetH/2;
-    Vector<int> colors;
+    Vector<int> _colors;
+    Mat colors;
+    colors.create(this->datasetH, this->datasetW, CV_32F);
+    for (int j=0; j<colors.rows; j++) {
+        for (int i=0; i<colors.cols; i++) {
+            colors.at<float>(Point(i, j)) = -1;
+        }
+    }
+
     for (int j=row-d; j<=row+d; j++) {
         for (int i=col-(datasetW-1); i<=col; i++) {
             int color = mat.at<uchar>(Point(i, j));
-            colors.push_back(color);
+            _colors.push_back(color);
         }
     }
-    colors.pop_back();
+    _colors.pop_back();
+
+    //++
+    for (size_t x=0; x<_colors.size(); x++) {
+        Vector<int> rc = ConvertToRowCol((int)x, datasetW);
+        int _row = (row-d)+rc[0];
+        int _col = (col-(datasetW-1))+rc[1];
+        /*
+        //cout<<"_row, _col: "<<_row<<", "<<_col<<" - "<<nMat.at<float>(Point(_col, _row));
+        if ((_row >= d && _col >= datasetW-1) && _row <= row && (_row != row || _col != col)) {
+            //cout<<"xxx"<<_row<<"-"<<_col;
+            _colors[x] = -1;
+        }*/
+        colors.at<float>(Point(rc[1], rc[0])) = (float)_colors[x];
+        //cout<<endl;
+    }
+
     // DEBUG
     /*
-    cout<<"COLORS: ";
-    for (size_t x=0; x<colors.size(); x++) {
-        cout<<colors[x]<<", ";
+    cout<<"_COLORS: ";
+    for (size_t x=0; x<_colors.size(); x++) {
+        cout<<_colors[x]<<", ";
     }
-    cout<<endl;*/
+    cout<<"\nCOLORS: \n";
+    for (int j=0; j<colors.rows; j++) {
+        for (int i=0; i<colors.cols; i++) {
+            cout<<colors.at<float>(Point(i, j))<<", ";
+        }
+        cout<<endl;
+    }
+    cout<<endl;//*/
     return colors;
 }
 

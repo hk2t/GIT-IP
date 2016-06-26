@@ -3,5 +3,5 @@
 MyData::MyData(){
 }
 MyData::MyData(int data){
-    this->data = data;
+    this->color = data;
 }

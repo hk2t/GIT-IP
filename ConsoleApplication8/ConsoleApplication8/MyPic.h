@@ -24,7 +24,7 @@ private:
     int cols;
 private:
     void Init(String path, int flags, int datasetW, int datasetH);
-    Vector<int> GetDataSet(int row, int col);
+    Mat GetDataSet(int row, int col);
     int Rand(int min, int max);
     int ConvertToIndex(int row, int col);
     Vector<int> ConvertToRowCol(int index, int cols);
